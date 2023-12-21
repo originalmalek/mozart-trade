@@ -38,10 +38,10 @@ Add orders: 31000,32000,33000
 Position Quantity: your position amount for all orders(enter and add orders). The value ignores if Risk > 0
 Take Profit Orders: 39000, 40000, 41000
 Risk: 50. Risk ignores if value is 0, then uses Position Quantity
-```
-Copy dictionary with trading data
-4. In the bot menu click /create_deal
-5. Send your dict as a message
+```  
+Copy dictionary with trading data  
+4. In the bot menu click /create_deal  
+5. Send your dict as a message  
 
 ## How to manage
 1. Send /start to the bot
