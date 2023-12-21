@@ -19,7 +19,7 @@ TELEGRAM_CHAT_ID=your_telegram_chat_id
 
 4. Run bot
 ```sh
-python3 main.py
+python3 bot_cmd.py
 ```
 
 ## How to make signal for trade
