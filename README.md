@@ -48,6 +48,6 @@ Copy dictionary with trading data
 2. You will see menu with commands
 3. Choice menu option
 
-
-my telegram @originalmalek
+## Contacts
+telegram @originalmalek
 
