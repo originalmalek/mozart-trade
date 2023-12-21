@@ -28,7 +28,7 @@ python3 bot_cmd.py
 1. Go to the [google sheet](https://docs.google.com/spreadsheets/d/1natldn_OdGTObRMEMCLbTaAvGc6fpmKdpT16dAtBkkc/edit?usp=sharing)
 2. Fill the columns
 example:
-   ```
+```
 Symbol: BTCUSDT
 Side: Buy or Sell
 Market_entry: 1 or 0
