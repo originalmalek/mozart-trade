@@ -62,8 +62,17 @@ def get_minimum_order_amount(symbol):
     return float(instrument_info['result']['list'][0]['lotSizeFilter']['minOrderQty'])
 
 
-def place_orders(symbol, side, market_entry, stop_loss_type, stop_loss_price, add_orders, position_amount,
-                 take_profit_orders, risk):
+def place_orders(trade):
+    symbol = trade['symbol'].upper()
+    side = trade['side']
+    market_entry = trade['market_entry']
+    stop_loss_type = trade['stop_loss_type']
+    stop_loss_price = trade['stop_loss_price']
+    add_orders = trade['add_orders']
+    position_amount = trade['position_amount']
+    take_profit_orders = trade['take_profit_orders']
+    risk = trade['risk']
+
     min_order_amount = get_minimum_order_amount(symbol)
     last_price = get_last_price(symbol)
     num_decimal_digits = get_num_decimal_digits(min_order_amount)
@@ -98,20 +107,9 @@ def set_leverage(symbol: str):
 
 def create_trade(trade):
     try:
-        symbol = trade['symbol'].upper()
-        side = trade['side']
-        market_entry = trade['market_entry']
-        stop_loss_type = trade['stop_loss_type']
-        stop_loss_price = trade['stop_loss_price']
-        add_orders = trade['add_orders']
-        position_amount = trade['position_amount']
-        take_profit_orders = trade['take_profit_orders']
-        risk = trade['risk']
+        set_leverage(trade[symbol])
+        place_orders(trade)
 
-        set_leverage(symbol)
-
-        place_orders(symbol, side, market_entry, stop_loss_type, stop_loss_price, add_orders, position_amount,
-                     take_profit_orders, risk)
         return True
     except Exception as e:
         return str(e)
