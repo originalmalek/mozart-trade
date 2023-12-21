@@ -1,5 +1,5 @@
 # mozart-trade
-An telegram bot for manage signals from Mozart Trade telegram channel
+A telegram bot for manage signals from Mozart Trade telegram channel
 
 Work about bot in process
 Python 3.10
