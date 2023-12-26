@@ -1,5 +1,5 @@
 import asyncio
-from mozart_deal import create_trade, cancel_trade, cancel_add_orders, set_sl_breakeven
+
 from aiogram import Bot, Dispatcher
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart, Command, CommandObject
@@ -7,8 +7,9 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import Message, CallbackQuery
 
-from generate_keyboards import get_menu_keyboard, generate_positions_keyboard
 from bybit_api import *
+from generate_keyboards import get_menu_keyboard, generate_positions_keyboard
+from mozart_deal import create_trade, cancel_trade, cancel_add_orders, set_sl_breakeven
 
 env = Env()
 env.read_env()
@@ -27,8 +28,7 @@ class CommandState(StatesGroup):
 @dp.message(CommandStart())
 async def command_start_handler(message: Message, state: FSMContext):
     await bot.send_message(text='Добро пожаловать в панель управления сделками.\n\n Выбери нужную команду',
-                           chat_id=telegram_chat_id,
-                           reply_markup=get_menu_keyboard())
+                           chat_id=telegram_chat_id, reply_markup=get_menu_keyboard())
     await state.set_state(CommandState.state_none)
 
 
@@ -71,8 +71,7 @@ async def cmd_cancel_trade(message: Message, command: CommandObject, state: FSMC
         await state_cancel_trade(message, state, symbol=command.args)
     else:
         positions_keyboard = generate_positions_keyboard(action='cancel_trade')
-        await message.answer(text='Введите или выбирите торговую пару',
-                             reply_markup=positions_keyboard)
+        await message.answer(text='Введите или выбирите торговую пару', reply_markup=positions_keyboard)
 
         await state.set_state(CommandState.cancel_trade)
 
@@ -141,7 +140,7 @@ async def state_create_trade(message: Message, state: FSMContext, trade=None):
         else:
             await message.answer(text=f'Ошибка при создании трейда\n\n{create_trade_status}')
     except Exception as e:
-        await message.answer(text=f'Ошибка при создании трейда')
+        await message.answer(text=f'Ошибка при создании трейда {e}')
     await state.set_state(CommandState.state_none)
 
 
