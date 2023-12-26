@@ -77,12 +77,25 @@ async def cmd_cancel_trade(message: Message, command: CommandObject, state: FSMC
 
 
 @dp.message(Command('show_positions'))
-async def cmd_cancel_add_orders(message: Message, command: CommandObject, state: FSMContext, ):
+async def cmd_show_positions(message: Message, command: CommandObject, state: FSMContext, ):
     if command.args:
         await state_cancel_add_orders(message, state, symbol=command.args)
     else:
-        positions_keyboard = generate_positions_keyboard(action='show_positions')
-        await message.answer(text='Статистика по парам', reply_markup=positions_keyboard)
+        positions = get_position_info(settle_coin='USDT')['result']['list']
+        total_unrealised_pnl = 0
+
+        text = 'Статистика по парам:\n\n'
+
+        for position in positions:
+            symbol = position['symbol']
+            side = '📈' if position['side'] == 'Buy' else '📉'
+            unrealised_pnl = round(float(position['unrealisedPnl']), 2)
+            text += f'{side} {symbol} {"🟢" if unrealised_pnl > 0 else "🔴"} {unrealised_pnl}\n'
+            total_unrealised_pnl += unrealised_pnl
+
+        text += f'\nTotal unrealised PnL\n{round(total_unrealised_pnl, 2)} {"🟢" if total_unrealised_pnl > 0 else "🔴"}'
+
+        await message.answer(text=text)
         await state.set_state(CommandState.state_none)
 
 
