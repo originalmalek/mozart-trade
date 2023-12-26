@@ -1,4 +1,5 @@
 from pybit.exceptions import InvalidRequestError
+
 import bybit_api
 
 
@@ -8,27 +9,23 @@ def place_position_orders(one_order_position_amount,
                           side,
                           add_orders):
     if market_entry:
-        bybit_api.open_order(symbol,
-                             side,
-                             one_order_position_amount,
-                             'Market',
-                             price=0)
+        bybit_api.open_order(symbol, side, one_order_position_amount, 'Market', price=0)
 
     for add_order_price in add_orders:
-        bybit_api.open_order(symbol,
-                             side,
-                             one_order_position_amount,
-                             'Limit',
-                             price=add_order_price)
+        bybit_api.open_order(symbol, side, one_order_position_amount, 'Limit', price=add_order_price)
 
 
-def place_take_profit_orders(take_profit_order_amount, symbol, take_profit_orders):
+def place_take_profit_orders(take_profit_order_amount,
+                             symbol,
+                             take_profit_orders):
     for take_profit_order in take_profit_orders:
-        bybit_api.trading_tp(symbol=symbol, tp_size=take_profit_order_amount,
-                             tp_price=take_profit_order)
+        bybit_api.trading_tp(symbol=symbol, tp_size=take_profit_order_amount, tp_price=take_profit_order)
 
 
-def calculate_total_positions_amount(risk, stop_loss_price, position_amount, last_price):
+def calculate_total_positions_amount(risk,
+                                     stop_loss_price,
+                                     position_amount,
+                                     last_price):
     if risk:
         return risk / abs(last_price - stop_loss_price)
     else:
@@ -91,29 +88,18 @@ def place_orders(trade):
     min_order_amount = get_minimum_order_amount(symbol)
     last_price = get_last_price(symbol)
     num_decimal_digits = get_num_decimal_digits(min_order_amount)
-    total_positions_amount = calculate_total_positions_amount(risk, stop_loss_price,
-                                                              position_amount,
-                                                              last_price)
-    orders_quantity = calculate_orders_quantity(market_entry,
-                                                add_orders)
+    total_positions_amount = calculate_total_positions_amount(risk, stop_loss_price, position_amount, last_price)
+    orders_quantity = calculate_orders_quantity(market_entry, add_orders)
 
-    take_profit_order_amount = calculate_take_profit_order_amount(total_positions_amount,
-                                                                  orders_quantity,
-                                                                  num_decimal_digits,
-                                                                  min_order_amount,
+    take_profit_order_amount = calculate_take_profit_order_amount(total_positions_amount, orders_quantity,
+                                                                  num_decimal_digits, min_order_amount,
                                                                   take_profit_orders)
 
     one_order_position_amount = round(take_profit_order_amount * len(take_profit_orders), num_decimal_digits)
 
-    place_position_orders(one_order_position_amount,
-                          symbol,
-                          market_entry,
-                          side,
-                          add_orders)
+    place_position_orders(one_order_position_amount, symbol, market_entry, side, add_orders)
 
-    place_take_profit_orders(take_profit_order_amount,
-                             symbol,
-                             take_profit_orders)
+    place_take_profit_orders(take_profit_order_amount, symbol, take_profit_orders)
 
     if stop_loss_type == 'Fix':
         bybit_api.trading_stop(symbol=symbol, sl_size=total_positions_amount, sl_price=stop_loss_price)
@@ -135,7 +121,6 @@ def create_trade(trade):
     try:
         set_leverage(trade['symbol'])
         place_orders(trade)
-
         return True
     except Exception as e:
         return str(e)
@@ -150,11 +135,8 @@ def cancel_trade(symbol):
         trade_side = open_trade['result']['list'][0]['side']
         trade_amount = open_trade['result']['list'][0]['size']
 
-        bybit_api.open_order(symbol=symbol,
-                             side='Sell' if trade_side == 'Buy' else 'Buy',
-                             quantity=trade_amount,
-                             order_type='Market',
-                             price=None)
+        bybit_api.open_order(symbol=symbol, side='Sell' if trade_side == 'Buy' else 'Buy', quantity=trade_amount,
+                             order_type='Market', price=None)
         bybit_api.cancel_all_orders(symbol)
         return True
     except InvalidRequestError as e:
