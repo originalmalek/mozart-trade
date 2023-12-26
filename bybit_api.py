@@ -3,8 +3,8 @@ from pybit.unified_trading import HTTP
 
 env = Env()
 env.read_env()
-api_key = env('API_KEY')
-api_secret = env('API_SECRET')
+api_key = env('BYBIT_API_KEY')
+api_secret = env('BYBIT_API_SECRET')
 
 session = HTTP(testnet=False, api_key=api_key, api_secret=api_secret)
 
